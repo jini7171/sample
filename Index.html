@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIBE // CODE — 바이브 코딩</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #100F17;
+    --bg-soft: #17151F;
+    --card: #1C1A26;
+    --card-line: rgba(242,239,233,0.09);
+    --text: #F2EFE9;
+    --text-dim: #A9A5B5;
+    --magenta: #FF5C8A;
+    --cyan: #5CE1E6;
+    --yellow: #FFD166;
+    --violet: #8C7CFF;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Baloo 2', sans-serif;
+    --body: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.6;
+    overflow-x:hidden;
+    padding-bottom:64px; /* room for the fixed vibe player */
+  }
+
+  a{ color:inherit; text-decoration:none; }
+  img,svg{ display:block; max-width:100%; }
+
+  .wrap{
+    max-width:1140px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* Background ambience */
+  .glow{
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,92,138,0.16), transparent 40%),
+      radial-gradient(circle at 85% 10%, rgba(92,225,230,0.13), transparent 42%),
+      radial-gradient(circle at 60% 80%, rgba(140,124,255,0.14), transparent 45%);
+    pointer-events:none;
+  }
+
+  /* NAV */
+  header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:100;
+    backdrop-filter:blur(14px);
+    background:rgba(16,15,23,0.72);
+    border-bottom:1px solid var(--card-line);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 24px;
+    max-width:1140px;
+    margin:0 auto;
+  }
+  .logo{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:1.25rem;
+    letter-spacing:0.5px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .logo .dot{ color:var(--magenta); }
+  .nav-links{
+    display:flex;
+    gap:32px;
+    font-size:0.92rem;
+    font-weight:600;
+    color:var(--text-dim);
+  }
+  .nav-links a{ transition:color 0.2s ease; }
+  .nav-links a:hover{ color:var(--yellow); }
+  .nav-cta{
+    background:linear-gradient(120deg, var(--magenta), var(--violet));
+    padding:10px 20px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:0.9rem;
+    box-shadow:0 6px 18px rgba(255,92,138,0.25);
+  }
+  .burger{ display:none; background:none; border:none; color:var(--text); font-size:1.5rem; cursor:pointer; }
+
+  @media (max-width:800px){
+    .nav-links{ display:none; }
+    .nav-cta{ display:none; }
+    .burger{ display:block; }
+  }
+
+  /* HERO */
+  .hero{
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:140px 24px 100px;
+    position:relative;
+  }
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:0.8rem;
+    letter-spacing:3px;
+    color:var(--cyan);
+    text-transform:uppercase;
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:8px; height:8px;
+    border-radius:50%;
+    background:var(--magenta);
+    box-shadow:0 0 12px var(--magenta);
+    animation:pulse-dot 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse-dot{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.4; transform:scale(0.7); }
+  }
+  h1.hero-title{
+    font-family:var(--display);
+    font-weight:700;
+    font-size:clamp(2.4rem, 6vw, 4.6rem);
+    line-height:1.15;
+    max-width:820px;
+    background:linear-gradient(120deg, var(--text) 40%, var(--magenta) 70%, var(--cyan) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero-sub{
+    margin-top:24px;
+    font-size:1.15rem;
+    color:var(--text-dim);
+    max-width:560px;
+  }
+  .hero-cta-row{
+    margin-top:40px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .btn-primary, .btn-ghost{
+    padding:15px 30px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:1rem;
+    cursor:pointer;
+    border:none;
+    transition:transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn-primary{
+    background:linear-gradient(120deg, var(--magenta), var(--violet));
+    color:#100F17;
+    color:white;
+    box-shadow:0 10px 30px rgba(255,92,138,0.28);
+  }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 14px 34px rgba(255,92,138,0.38); }
+  .btn-ghost{
+    background:transparent;
+    border:1px solid var(--card-line);
+    color:var(--text);
+  }
+  .btn-ghost:hover{ border-color:var(--cyan); color:var(--cyan); }
+
+  /* Equalizer visual */
+  .equalizer{
+    display:flex;
+    align-items:flex-end;
+    gap:6px;
+    height:70px;
+    margin-top:56px;
+  }
+  .equalizer span{
+    width:8px;
+    border-radius:4px;
+    background:linear-gradient(180deg, var(--cyan), var(--magenta));
+    animation:eq 1.2s ease-in-out infinite;
+  }
+  @keyframes eq{
+    0%,100%{ height:14px; }
+    50%{ height:60px; }
+  }
+
+  /* SECTION GENERIC */
+  section{
+    padding:120px 0;
+    position:relative;
+  }
+  .section-head{
+    max-width:640px;
+    margin:0 auto 64px;
+    text-align:center;
+  }
+  .section-eyebrow{
+    font-family:var(--mono);
+    font-size:0.78rem;
+    letter-spacing:2.5px;
+    color:var(--yellow);
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+  h2{
+    font-family:var(--display);
+    font-size:clamp(1.8rem, 4vw, 2.6rem);
+    font-weight:700;
+  }
+  .section-desc{
+    margin-top:16px;
+    color:var(--text-dim);
+    font-size:1.05rem;
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  /* WHAT IS VIBE CODING — terminal demo */
+  .terminal-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+    align-items:center;
+  }
+  @media (max-width:860px){
+    .terminal-grid{ grid-template-columns:1fr; }
+  }
+  .terminal{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  }
+  .terminal-bar{
+    display:flex;
+    gap:8px;
+    padding:14px 16px;
+    background:rgba(255,255,255,0.03);
+    border-bottom:1px solid var(--card-line);
+  }
+  .terminal-bar span{
+    width:11px; height:11px; border-radius:50%;
+    background:var(--card-line);
+  }
+  .terminal-bar span:nth-child(1){ background:#FF5F57; }
+  .terminal-bar span:nth-child(2){ background:#FEBC2E; }
+  .terminal-bar span:nth-child(3){ background:#28C840; }
+  .terminal-body{
+    font-family:var(--mono);
+    font-size:0.92rem;
+    padding:24px;
+    min-height:220px;
+    color:var(--cyan);
+    white-space:pre-wrap;
+    line-height:1.7;
+  }
+  .terminal-body .prompt-line{ color:var(--yellow); }
+  .terminal-body .code-out{ color:var(--text); }
+  .caret{
+    display:inline-block;
+    width:8px; height:1.1em;
+    background:var(--magenta);
+    vertical-align:middle;
+    animation:blink 1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .why-list{ display:flex; flex-direction:column; gap:22px; }
+  .why-item{
+    display:flex;
+    gap:16px;
+    align-items:flex-start;
+  }
+  .why-icon{
+    flex:none;
+    width:40px; height:40px;
+    border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.2rem;
+    background:rgba(255,92,138,0.12);
+  }
+  .why-item h3{ font-size:1.05rem; font-weight:700; margin-bottom:4px; }
+  .why-item p{ color:var(--text-dim); font-size:0.95rem; }
+
+  /* TRACKS / PRINCIPLES — album track listing framing */
+  .tracklist{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:20px;
+    padding:8px;
+  }
+  .track{
+    display:grid;
+    grid-template-columns:70px 1fr 90px;
+    align-items:center;
+    gap:20px;
+    padding:22px 24px;
+    border-radius:14px;
+    transition:background 0.25s ease;
+  }
+  .track:hover{ background:rgba(255,255,255,0.03); }
+  .track + .track{ border-top:1px solid var(--card-line); }
+  .track-num{
+    font-family:var(--mono);
+    color:var(--text-dim);
+    font-size:0.85rem;
+  }
+  .track-info h3{
+    font-family:var(--display);
+    font-size:1.15rem;
+    margin-bottom:6px;
+  }
+  .track-info p{ color:var(--text-dim); font-size:0.92rem; }
+  .track-time{
+    font-family:var(--mono);
+    color:var(--cyan);
+    font-size:0.85rem;
+    text-align:right;
+  }
+  @media (max-width:640px){
+    .track{ grid-template-columns:40px 1fr; }
+    .track-time{ display:none; }
+  }
+
+  /* TOOLS */
+  .tool-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:20px;
+  }
+  .tool-card{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:16px;
+    padding:28px;
+    transition:transform 0.25s ease, border-color 0.25s ease;
+  }
+  .tool-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--violet);
+  }
+  .tool-mark{
+    font-family:var(--mono);
+    font-size:0.75rem;
+    color:var(--yellow);
+    letter-spacing:2px;
+    margin-bottom:14px;
+    display:inline-block;
+  }
+  .tool-card h3{ font-size:1.15rem; font-weight:700; margin-bottom:8px; }
+  .tool-card p{ color:var(--text-dim); font-size:0.92rem; }
+
+  /* TESTIMONIALS - overheard quotes */
+  .quote-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  @media (max-width:900px){ .quote-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:640px){ .quote-grid{ grid-template-columns:1fr; } }
+  .quote-card{
+    background:var(--card);
+    border:1px solid var(--card-line);
+    border-radius:16px;
+    padding:26px;
+    font-size:0.98rem;
+  }
+  .quote-card:nth-child(2){ transform:rotate(-1deg); }
+  .quote-card:nth-child(3){ transform:rotate(1deg); }
+  .quote-mark{ font-family:var(--display); font-size:2rem; color:var(--magenta); line-height:0.5; display:block; margin-bottom:10px; }
+  .quote-who{
+    margin-top:16px;
+    font-family:var(--mono);
+    font-size:0.8rem;
+    color:var(--text-dim);
+  }
+
+  /* CTA */
+  .cta-section{
+    text-align:center;
+    background:linear-gradient(135deg, rgba(255,92,138,0.12), rgba(140,124,255,0.12));
+    border-radius:28px;
+    border:1px solid var(--card-line);
+    padding:80px 32px;
+    margin:0 24px;
+  }
+  .cta-section h2{ font-size:clamp(1.8rem,5vw,2.8rem); }
+  .cta-section p{ color:var(--text-dim); margin-top:14px; max-width:480px; margin-left:auto; margin-right:auto; }
+  .cta-section .btn-primary{ margin-top:32px; }
+
+  footer{
+    text-align:center;
+    padding:60px 24px 40px;
+    color:var(--text-dim);
+    font-size:0.85rem;
+  }
+  footer .logo{ justify-content:center; margin-bottom:12px; }
+
+  /* Fixed vibe player (signature element) */
+  .vibe-player{
+    position:fixed;
+    bottom:0; left:0; right:0;
+    z-index:99;
+    background:rgba(20,18,28,0.9);
+    backdrop-filter:blur(16px);
+    border-top:1px solid var(--card-line);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:10px 20px;
+    font-family:var(--mono);
+    font-size:0.78rem;
+  }
+  .vibe-player .vp-eq{
+    display:flex; align-items:flex-end; gap:3px; height:18px; flex:none;
+  }
+  .vibe-player .vp-eq span{
+    width:3px; border-radius:2px;
+    background:var(--cyan);
+    animation:eq 0.9s ease-in-out infinite;
+  }
+  .vp-label{ color:var(--text-dim); flex:none; white-space:nowrap; }
+  .vp-track{ color:var(--text); flex:none; white-space:nowrap; }
+  .vp-bar{
+    flex:1;
+    height:4px;
+    background:rgba(255,255,255,0.08);
+    border-radius:2px;
+    overflow:hidden;
+    min-width:60px;
+  }
+  .vp-bar-fill{
+    height:100%;
+    width:0%;
+    background:linear-gradient(90deg, var(--magenta), var(--cyan));
+  }
+  .vp-pct{ flex:none; color:var(--text-dim); width:38px; text-align:right; }
+
+  @media (max-width:640px){
+    .vp-label{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow"></div>
+
+<header>
+  <nav>
+    <div class="logo">VIBE<span class="dot">//</span>CODE</div>
+    <div class="nav-links">
+      <a href="#what">소개</a>
+      <a href="#principles">원칙</a>
+      <a href="#tools">도구</a>
+      <a href="#reviews">후기</a>
+    </div>
+    <a href="#start" class="nav-cta">시작하기</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">NOW PLAYING · FLOW STATE</div>
+    <h1 class="hero-title">생각한 대로 흐르면,<br>그게 코드가 된다</h1>
+    <p class="hero-sub">
+      문법을 외우는 대신 흐름을 탄다. 바이브 코딩은 완벽한 설계도 대신
+      머릿속 리듬을 그대로 코드로 옮기는 새로운 작업 방식입니다.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#what"><button class="btn-primary">플로우 시작하기</button></a>
+      <a href="#principles"><button class="btn-ghost">원칙 먼저 보기</button></a>
+    </div>
+    <div class="equalizer" aria-hidden="true">
+      <span style="animation-delay:0s"></span>
+      <span style="animation-delay:0.15s"></span>
+      <span style="animation-delay:0.3s"></span>
+      <span style="animation-delay:0.1s"></span>
+      <span style="animation-delay:0.25s"></span>
+      <span style="animation-delay:0.05s"></span>
+      <span style="animation-delay:0.35s"></span>
+    </div>
+  </section>
+
+  <!-- WHAT IS VIBE CODING -->
+  <section id="what">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">TRACK 00 · INTRO</div>
+        <h2>바이브 코딩이 뭔가요?</h2>
+        <p class="section-desc">
+          말로 설명하면 코드가 되어 나오는 순간, 그 감각을 즐기는 개발 방식입니다.
+        </p>
+      </div>
+
+      <div class="terminal-grid">
+        <div class="terminal reveal">
+          <div class="terminal-bar"><span></span><span></span><span></span></div>
+          <div class="terminal-body" id="typeTarget"></div>
+        </div>
+
+        <div class="why-list reveal">
+          <div class="why-item">
+            <div class="why-icon">🎧</div>
+            <div>
+              <h3>말로 시작해서 코드로 끝난다</h3>
+              <p>원하는 결과를 문장으로 설명하면, 그 흐름을 이어받아 실행 가능한 코드가 만들어집니다.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon">🌊</div>
+            <div>
+              <h3>완벽한 설계보다 빠른 시도</h3>
+              <p>먼저 돌려보고, 느낌이 오면 다듬는다. 실험이 곧 설계 과정이 됩니다.</p>
+            </div>
+          </div>
+          <div class="why-item">
+            <div class="why-icon">🔁</div>
+            <div>
+              <h3>대화하듯 반복한다</h3>
+              <p>한 번에 완성하지 않고, 짧은 대화를 주고받으며 원하는 모양으로 다가갑니다.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRINCIPLES as tracklist -->
+  <section id="principles">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">TRACKLIST</div>
+        <h2>플로우를 만드는 세 가지 트랙</h2>
+        <p class="section-desc">순서대로 재생해보세요. 각 트랙이 바이브 코딩의 한 국면을 담고 있습니다.</p>
+      </div>
+
+      <div class="tracklist reveal">
+        <div class="track">
+          <div class="track-num">01</div>
+          <div class="track-info">
+            <h3>Feel It — 감을 믿는다</h3>
+            <p>정답을 찾기 전에 방향부터 잡는다. 막연해도 일단 흐름을 따라가 봅니다.</p>
+          </div>
+          <div class="track-time">3:12</div>
+        </div>
+        <div class="track">
+          <div class="track-num">02</div>
+          <div class="track-info">
+            <h3>Loop It — 대화로 다듬는다</h3>
+            <p>결과를 보고, 다시 말을 건네고, 조금씩 원하는 모양에 가까워집니다.</p>
+          </div>
+          <div class="track-time">2:47</div>
+        </div>
+        <div class="track">
+          <div class="track-num">03</div>
+          <div class="track-info">
+            <h3>Ship It — 완성보다 배포</h3>
+            <p>다 다듬어질 때까지 기다리지 않는다. 쓸만해지면 세상에 내보냅니다.</p>
+          </div>
+          <div class="track-time">3:58</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">TRACK 04 · GEAR</div>
+        <h2>플로우를 함께 타는 도구들</h2>
+        <p class="section-desc">바이브 코딩은 대화형 AI 코딩 도구와 함께할 때 가장 자연스럽게 흐릅니다.</p>
+      </div>
+
+      <div class="tool-grid reveal">
+        <div class="tool-card">
+          <span class="tool-mark">EDITOR</span>
+          <h3>AI 통합 에디터</h3>
+          <p>코드를 쓰는 동시에 대화하며 수정할 수 있는 편집기입니다.</p>
+        </div>
+        <div class="tool-card">
+          <span class="tool-mark">AGENT</span>
+          <h3>자율 코딩 에이전트</h3>
+          <p>작업을 통째로 맡기고, 결과만 확인하며 흐름을 이어갑니다.</p>
+        </div>
+        <div class="tool-card">
+          <span class="tool-mark">SANDBOX</span>
+          <h3>즉시 실행 환경</h3>
+          <p>생각이 떠오르자마자 바로 실행해볼 수 있는 온라인 작업 공간입니다.</p>
+        </div>
+        <div class="tool-card">
+          <span class="tool-mark">CHAT</span>
+          <h3>대화형 코드 어시스턴트</h3>
+          <p>질문 하나로 막힌 부분을 풀고, 다시 흐름 속으로 돌아갑니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section id="reviews">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">TRACK 05 · LIVE</div>
+        <h2>플로우 중에 들려온 말들</h2>
+        <p class="section-desc">바이브를 타본 사람들이 남긴 짧은 순간들입니다.</p>
+      </div>
+
+      <div class="quote-grid reveal">
+        <div class="quote-card">
+          <span class="quote-mark">“</span>
+          말하듯 설명했더니 정말 그대로 코드가 나와서 소름이었어요.
+          <div class="quote-who">— 프론트엔드 개발자</div>
+        </div>
+        <div class="quote-card">
+          <span class="quote-mark">“</span>
+          설계 문서 만드는 시간에 이미 세 번째 버전을 돌려보고 있더라고요.
+          <div class="quote-who">— 사이드 프로젝트 개발자</div>
+        </div>
+        <div class="quote-card">
+          <span class="quote-mark">“</span>
+          막힐 때마다 대화로 풀어가니까 흐름이 끊기질 않아요.
+          <div class="quote-who">— 주니어 개발자</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="start">
+    <div class="cta-section reveal">
+      <h2>지금, 바이브를 타보세요</h2>
+      <p>완벽한 계획은 나중에. 지금은 흐름을 믿고 첫 줄을 써볼 시간입니다.</p>
+      <a href="#what"><button class="btn-primary">플로우 다시 재생</button></a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="logo">VIBE<span class="dot">//</span>CODE</div>
+  <div>© 2026 Vibe Coding. 흐름을 믿는 모든 개발자에게.</div>
+</footer>
+
+<!-- Fixed vibe player: signature element, doubles as scroll progress -->
+<div class="vibe-player">
+  <div class="vp-eq" aria-hidden="true">
+    <span style="animation-delay:0s"></span>
+    <span style="animation-delay:0.2s"></span>
+    <span style="animation-delay:0.1s"></span>
+  </div>
+  <span class="vp-label">NOW VIBING</span>
+  <span class="vp-track">main.flow — reading the page</span>
+  <div class="vp-bar"><div class="vp-bar-fill" id="scrollFill"></div></div>
+  <span class="vp-pct" id="scrollPct">0%</span>
+</div>
+
+<script>
+  // Scroll-triggered reveal animation
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(el => io.observe(el));
+
+  // Scroll progress -> vibe player bar
+  const fill = document.getElementById('scrollFill');
+  const pct = document.getElementById('scrollPct');
+  function updateScroll(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    const ratio = scrollHeight > 0 ? Math.min(100, Math.round((scrollTop / scrollHeight) * 100)) : 0;
+    fill.style.width = ratio + '%';
+    pct.textContent = ratio + '%';
+  }
+  document.addEventListener('scroll', updateScroll, { passive: true });
+  updateScroll();
+
+  // Terminal typing effect
+  const lines = [
+    { text: '> 사용자가 좋아할 만한 로그인 화면 하나 만들어줘', type: 'prompt' },
+    { text: 'const Login = () => {\n  return (\n    <form className="login">\n      <input placeholder="이메일" />\n      <input placeholder="비밀번호" type="password" />\n      <button>로그인</button>\n    </form>\n  );\n};', type: 'code' },
+  ];
+  const target = document.getElementById('typeTarget');
+  let li = 0, ci = 0;
+
+  function typeNext(){
+    if (li >= lines.length) {
+      // restart loop after a pause
+      setTimeout(() => {
+        target.innerHTML = '';
+        li = 0; ci = 0;
+        typeNext();
+      }, 2400);
+      return;
+    }
+    const current = lines[li];
+    const span = target.querySelector('.current-line') || (() => {
+      const s = document.createElement('div');
+      s.className = 'current-line ' + (current.type === 'prompt' ? 'prompt-line' : 'code-out');
+      target.appendChild(s);
+      return s;
+    })();
+
+    if (ci <= current.text.length) {
+      span.textContent = current.text.slice(0, ci);
+      span.innerHTML += '<span class="caret"></span>';
+      ci++;
+      setTimeout(typeNext, current.type === 'prompt' ? 35 : 12);
+    } else {
+      span.innerHTML = current.text.replace(/\n/g, '<br>');
+      li++; ci = 0;
+      setTimeout(typeNext, 500);
+    }
+  }
+  typeNext();
+
+  // Mobile nav: simple anchor smooth scroll fallback already handled by CSS scroll-behavior
+</script>
+
+</body>
+</html>
